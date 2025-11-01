@@ -5,6 +5,15 @@ import { COLORS } from "../../utils/constants";
 import { initialUsers } from "../../data/initialUsers";
 
 export default function UsersList() {
+import { View, Text, FlatList, StyleSheet, Image } from "react-native";
+import { COLORS } from "../../utils/constants";
+
+const getInitials = (name) => {
+  const names = name.trim().split(" ");
+  return names.map((n) => n[0]).join("").toUpperCase();
+};
+
+export default function UsersList({ users }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Registered Users</Text>
@@ -21,6 +30,15 @@ export default function UsersList() {
                 <UserCircle color={COLORS.secondary} size={22} />
               )}
             </View>
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
+            </View>
+
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.email}>{item.email}</Text>
@@ -28,6 +46,20 @@ export default function UsersList() {
             <View style={styles.roleBadge(item.role)}>
               <Text style={styles.roleText(item.role)}>
                 {item.role.toUpperCase()}
+
+            <View
+              style={[
+                styles.roleBadge,
+                {
+                  backgroundColor:
+                    item.role === "admin"
+                      ? COLORS.primary
+                      : COLORS.success,
+                },
+              ]}
+            >
+              <Text style={styles.roleText}>
+                {item.role === "admin" ? "Admin" : "User"}
               </Text>
             </View>
           </View>
@@ -75,6 +107,37 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "600",
     fontSize: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#E0E7FF",
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  avatarText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.primary,
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: "600",
     color: "#111827",
   },
   email: {
@@ -94,3 +157,15 @@ const styles = StyleSheet.create({
   }),
 });
 
+  roleBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  roleText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "white",
+    textTransform: "uppercase",
+  },
+});
